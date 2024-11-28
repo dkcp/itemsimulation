@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Accounts {
+  accountId String    @id @map("accountId")
+  password  String    @map("password")
+  name      String    @map("name")
+
+  characters Characters[] // 하나의 계정은 여러개의 캐릭터를 보유할 수 있어요!
+
+  @@map("Accounts")
+}
+
+model Characters {
+  characterId Int     @id @default(autoincrement()) @map("characterId")
+  accountId   String  @map("accountId")
+  name        String  @map("name")
+  health      Int     @default(500)  @map("health") 
+  power       Int     @default(100)  @map("power")  
+  money       Int     @default(10000)  @map("money")
+
+  accounts Accounts @relation(fields: [accountId], references: [accountId], onDelete: Cascade)
+  inventory Inventory[]
+  mountedItems MountedItems[]
+
+  @@map("Characters")
+}
+
+model Items {
+  item_code   Int     @id @map("item_code")
+  item_name   String  @map("item_name")
+  health      Int     @map("health")
+  power       Int     @map("power")
+  item_price  Int     @map("item_price")
+
+  inventory Inventory[]
+  mountedItems MountedItems[]
+
+  @@map("Items")
+}
+
+model Inventory {
+  characterId Int     @map("characterId")
+  item_code   Int     @map("item_code")
+  count       Int     @map("count")
+
+  characters Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+  items Items @relation(fields: [item_code], references: [item_code], onDelete: Cascade)
+
+  @@id([characterId, item_code])
+  @@map("Inventory")
+}
+
+model MountedItems {
+  mountId     Int     @id @default(autoincrement()) @map("mountId")
+  characterId Int     @map("characterId")
+  item_code   Int     @map("item_code")
+
+  characters Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+  items Items @relation(fields: [item_code], references: [item_code], onDelete: Cascade)
+
+  @@map("MountedItems")
+}
+
