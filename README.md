@@ -3,6 +3,8 @@
   .gitignore 파일을 생성하여 .env 파일과 node_modules 폴더가 업로드되지 않게 함
   .prettierrc 파일을 생성하여 일정한 코드 포맷팅 유지
 2. AWS EC2 배포
+  배포 IP : 18.218.78.166
+  접속 포트 : 3017
 3. 인증 미들웨어 구현
    src/middlewares/auth.middleware.js 에서 jwt를 쿠키를 통해 읽고 토큰 사용자 정보를 req.account 속성값으로 저장
 4. 데이터베이스 모델링
